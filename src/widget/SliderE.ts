@@ -111,7 +111,7 @@ export class SliderE extends WidgetE {
 	private drawSliderFrameAndCursor(renderer: g.Renderer): void {
 		const frameColor = colors.sliderFrame;
 		const cursorWidth = 2;
-		const t = this.value / (this.max - this.min);
+		const t = (this.value - this.min) / (this.max - this.min);
 		const x = 1 + Math.floor(((sliderWidth - 2) - cursorWidth) * t);
 
 		renderer.fillRect(x, 0, cursorWidth, this.height, "white");
