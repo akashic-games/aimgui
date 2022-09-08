@@ -1,9 +1,12 @@
-import { AABB, aabbToVec, Vec2, Vec2Like } from "@akashic-extension/collision-js";
+import type { AABB, Vec2Like } from "@akashic-extension/collision-js";
+import { aabbToVec, Vec2 } from "@akashic-extension/collision-js";
 import { colors } from "./colors";
 import { drawText, limitText } from "./common";
-import { ScrollArea, ScrollBar } from "./ScrollBar";
+import type { ScrollArea} from "./ScrollBar";
+import { ScrollBar } from "./ScrollBar";
 import { sizes } from "./sizes";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 const minWindowWidth = 64;
 const maxWindowHeight = 64;
