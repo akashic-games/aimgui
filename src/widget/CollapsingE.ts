@@ -1,8 +1,9 @@
 import { enlargeAABB, Vec2 } from "@akashic-extension/collision-js";
-import { Gui } from "..";
+import type { Gui } from "..";
 import { Placer } from "../Placer";
 import { drawText } from "./common";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * 折りたたみの下に配置されるウィジェットのインデント[px]。

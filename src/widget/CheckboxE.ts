@@ -1,7 +1,8 @@
-import { ExtractPropertyNames } from "../generics";
+import type { ExtractPropertyNames } from "../generics";
 import { colors } from "./colors";
 import { drawText } from "./common";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * チェックボックスとその隣のラベルの間の余白。

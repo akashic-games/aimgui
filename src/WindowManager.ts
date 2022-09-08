@@ -24,7 +24,7 @@ export class WindowManager {
 		// ウインドウの前後の並び替え。
 		// 新規ウインドウと最前面に移動する指示のあったウインドウを append する。
 		const frontWindows = this.newWindowEs.concat(this.windowEsToBeMovedFront);
-		for (let w of frontWindows) {
+		for (const w of frontWindows) {
 			this.root.append(w);
 		}
 

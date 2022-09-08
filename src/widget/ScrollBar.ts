@@ -1,4 +1,5 @@
-import { AABB, aabbToVec, clamp, Vec2Like } from "@akashic-extension/collision-js";
+import type { AABB, Vec2Like } from "@akashic-extension/collision-js";
+import { aabbToVec, clamp } from "@akashic-extension/collision-js";
 import { colors } from "./colors";
 import { sizes } from "./sizes";
 

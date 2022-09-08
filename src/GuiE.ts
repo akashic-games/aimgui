@@ -1,5 +1,5 @@
 import { Gui } from "./Gui";
-import { Memory } from "./Memory";
+import type { Memory } from "./Memory";
 
 /**
  * GuiE パラメータオブジェクト。
