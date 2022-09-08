@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/akashic-games/aimgui/master/img/akashic.png"/>
+<img src="https://raw.githubusercontent.com/akashic-games/aimgui/main/img/akashic.png"/>
 </p>
 
 # AimGui
@@ -70,7 +70,7 @@ guiE.run = gui => {
 };
 ```
 
-![Debug Tool ウインドウ](https://raw.githubusercontent.com/akashic-games/aimgui/master/img/sample.gif "サンプル")
+![Debug Tool ウインドウ](https://raw.githubusercontent.com/akashic-games/aimgui/main/img/sample.gif "サンプル")
 
 より詳しい使い方は、APIリファレンスと付属のサンプルを参照ください。
 
