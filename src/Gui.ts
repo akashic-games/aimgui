@@ -151,7 +151,9 @@ function radioButton<T, U>(ui: Gui, title: string, valueObject: T, key: ExtractP
 	return radioButton.pressed;
 }
 
-function radioButtonUi<T, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): (ui: Gui) => boolean {
+function radioButtonUi<T, U>(
+	title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U
+): (ui: Gui) => boolean {
 	return (ui: Gui) => radioButton<T, U>(ui, title, valueObject, key, buttonValue);
 }
 
