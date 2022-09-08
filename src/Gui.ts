@@ -126,13 +126,7 @@ function checkboxUi<T>(title: string, valueObject: T, key: ExtractPropertyNames<
 	return (ui: Gui) => checkbox<T>(ui, title, valueObject, key);
 }
 
-function radioButton<T extends Object, U>(
-	ui: Gui,
-	title: string,
-	valueObject: T,
-	key: ExtractPropertyNames<T, U>,
-	buttonValue: U
-): boolean {
+function radioButton<T, U>(ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
 	const gwid = ui.titleToGwid(title);
 	const radioButton =
 		ui.findWidgetByGwidAndType(gwid, RadioButtonE) ||
@@ -141,7 +135,7 @@ function radioButton<T extends Object, U>(
 			height: widgetHeightByFont(ui.font),
 			title,
 			font: ui.font,
-			valueObject,
+			valueObject: valueObject as Object,
 			key: key as string,
 			buttonValue,
 			gwid,
@@ -149,7 +143,7 @@ function radioButton<T extends Object, U>(
 		});
 
 	// 対象が変更になることがあるので。
-	radioButton.valueObject = valueObject;
+	radioButton.valueObject = valueObject as Object;
 	radioButton.key = key as string;
 
 	radioButton.place(ui);
@@ -157,22 +151,12 @@ function radioButton<T extends Object, U>(
 	return radioButton.pressed;
 }
 
-function radioButtonUi<T extends Object, U>(
-	title: string,
-	valueObject: T,
-	key: ExtractPropertyNames<T, U>,
-	buttonValue: U
-): (ui: Gui) => boolean {
+function radioButtonUi<T, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): (ui: Gui) => boolean {
 	return (ui: Gui) => radioButton<T, U>(ui, title, valueObject, key, buttonValue);
 }
 
-function slider<T extends Object>(
-	ui: Gui,
-	title: string,
-	valueObject: T,
-	key: ExtractPropertyNames<T, number>,
-	min: number,
-	max: number
+function slider<T>(
+	ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
 ): boolean {
 	const gwid = ui.titleToGwid(title);
 	const slider =
@@ -181,7 +165,7 @@ function slider<T extends Object>(
 			scene: ui.scene,
 			height: widgetHeightByFont(ui.font),
 			title,
-			valueObject,
+			valueObject: valueObject as Object,
 			key: key as string,
 			min,
 			max,
@@ -191,7 +175,7 @@ function slider<T extends Object>(
 		});
 
 	// 対象が変更になることがあるので。
-	slider.valueObject = valueObject;
+	slider.valueObject = valueObject as Object;
 	slider.key = key as string;
 
 	slider.place(ui);
@@ -199,12 +183,8 @@ function slider<T extends Object>(
 	return slider.changed;
 }
 
-function sliderUi<T extends Object>(
-	title: string,
-	valueObject: T,
-	key: ExtractPropertyNames<T, number>,
-	min: number,
-	max: number
+function sliderUi<T>(
+	title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
 ): (ui: Gui) => boolean {
 	return (ui: Gui) => slider<T>(ui, title, valueObject, key, min, max);
 }
@@ -811,7 +791,7 @@ export class Gui {
 	 * @param key ラジオボタンのオン・オフの真偽値のプロパティ名。
 	 * @returns ラジオボタンが押下された時、真。
 	 */
-	radioButton<T extends Object, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
+	radioButton<T, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
 		return this.add(radioButtonUi(title, valueObject, key, buttonValue));
 	}
 
@@ -825,7 +805,7 @@ export class Gui {
 	 * @param max 最大値。
 	 * @returns スライダーによって値が変更された時、真。
 	 */
-	slider<T extends Object>(title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number): boolean {
+	slider<T>(title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number): boolean {
 		return this.add(sliderUi(title, valueObject, key, min, max));
 	}
 
