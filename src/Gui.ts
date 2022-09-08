@@ -1,8 +1,7 @@
 import type { Constructor, ExtractPropertyNames } from "./generics";
 import type { Memory } from "./Memory";
 import { Placer } from "./Placer";
-import type { WindowStyle
-} from "./widget";
+import type { WindowStyle } from "./widget";
 import {
 	ButtonE, CheckboxE, CollapsingE, HorizonE, MarginE, RadioButtonE,
 	SliderE, LabelE, TextBoxE, WidgetE,
@@ -128,7 +127,12 @@ function checkboxUi<T>(title: string, valueObject: T, key: ExtractPropertyNames<
 }
 
 function radioButton<T extends Object, U>(
-	ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
+	ui: Gui,
+	title: string,
+	valueObject: T,
+	key: ExtractPropertyNames<T, U>,
+	buttonValue: U
+): boolean {
 	const gwid = ui.titleToGwid(title);
 	const radioButton =
 		ui.findWidgetByGwidAndType(gwid, RadioButtonE) ||
@@ -154,13 +158,21 @@ function radioButton<T extends Object, U>(
 }
 
 function radioButtonUi<T extends Object, U>(
-	title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U
+	title: string,
+	valueObject: T,
+	key: ExtractPropertyNames<T, U>,
+	buttonValue: U
 ): (ui: Gui) => boolean {
 	return (ui: Gui) => radioButton<T, U>(ui, title, valueObject, key, buttonValue);
 }
 
 function slider<T extends Object>(
-	ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
+	ui: Gui,
+	title: string,
+	valueObject: T,
+	key: ExtractPropertyNames<T, number>,
+	min: number,
+	max: number
 ): boolean {
 	const gwid = ui.titleToGwid(title);
 	const slider =
@@ -188,7 +200,11 @@ function slider<T extends Object>(
 }
 
 function sliderUi<T extends Object>(
-	title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
+	title: string,
+	valueObject: T,
+	key: ExtractPropertyNames<T, number>,
+	min: number,
+	max: number
 ): (ui: Gui) => boolean {
 	return (ui: Gui) => slider<T>(ui, title, valueObject, key, min, max);
 }
