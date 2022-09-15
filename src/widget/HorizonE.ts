@@ -1,6 +1,7 @@
-import { Gui } from "..";
+import type { Gui } from "..";
 import { Placer } from "../Placer";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * HorizonE コンストラクタパラメータオブジェクト。

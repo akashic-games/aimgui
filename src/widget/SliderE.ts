@@ -1,6 +1,7 @@
 import { colors } from "./colors";
 import { drawText, limitText } from "./common";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * スライダーとその隣のラベルの間の余白。

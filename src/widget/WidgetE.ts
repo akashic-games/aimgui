@@ -1,7 +1,8 @@
-import { AABB, Vec2 } from "@akashic-extension/collision-js";
-import { Gui } from "..";
-import { Memory } from "../Memory";
-import { Placer } from "../Placer";
+import type { AABB} from "@akashic-extension/collision-js";
+import { Vec2 } from "@akashic-extension/collision-js";
+import type { Gui } from "..";
+import type { Memory } from "../Memory";
+import type { Placer } from "../Placer";
 
 /**
  * WidgetE コンストラクタパラメータオブジェクト。

@@ -1,6 +1,7 @@
 import { colors } from "./colors";
 import { drawText } from "./common";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * ボタン内部のラベル左右のパディング。

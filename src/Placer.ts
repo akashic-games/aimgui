@@ -1,4 +1,5 @@
-import { AABB, enlargeAABB, Vec2, Vec2Like } from "@akashic-extension/collision-js";
+import type { AABB, Vec2Like } from "@akashic-extension/collision-js";
+import { enlargeAABB, Vec2 } from "@akashic-extension/collision-js";
 import { sizes } from "./widget/sizes";
 
 export type CursorDirection = "horizontal" | "vertical";

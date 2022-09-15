@@ -1,10 +1,13 @@
-import { AABB, Vec2, Vec2Like } from "@akashic-extension/collision-js";
-import { Gui } from "..";
+import type { AABB, Vec2Like } from "@akashic-extension/collision-js";
+import { Vec2 } from "@akashic-extension/collision-js";
+import type { Gui } from "..";
 // import { Placer } from "../Placer";
 import { colors } from "./colors";
-import { ScrollArea, ScrollBar } from "./ScrollBar";
+import type { ScrollArea} from "./ScrollBar";
+import { ScrollBar } from "./ScrollBar";
 import { sizes } from "./sizes";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * テキストボックスメモリ。

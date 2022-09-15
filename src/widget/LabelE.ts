@@ -1,5 +1,6 @@
 import { drawText } from "./common";
-import { WidgetE, WidgetEParameterObject } from "./WidgetE";
+import type { WidgetEParameterObject } from "./WidgetE";
+import { WidgetE } from "./WidgetE";
 
 /**
  * StaticTextE コンストラクタパラメータオブジェクト。
