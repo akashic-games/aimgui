@@ -135,7 +135,7 @@ function radioButton<T, U>(ui: Gui, title: string, valueObject: T, key: ExtractP
 			height: widgetHeightByFont(ui.font),
 			title,
 			font: ui.font,
-			valueObject,
+			valueObject: valueObject as Object,
 			key: key as string,
 			buttonValue,
 			gwid,
@@ -167,7 +167,7 @@ function slider<T>(
 			scene: ui.scene,
 			height: widgetHeightByFont(ui.font),
 			title,
-			valueObject,
+			valueObject: valueObject as Object,
 			key: key as string,
 			min,
 			max,
@@ -177,7 +177,7 @@ function slider<T>(
 		});
 
 	// 対象が変更になることがあるので。
-	slider.valueObject = valueObject;
+	slider.valueObject = valueObject as Object;
 	slider.key = key as string;
 
 	slider.place(ui);
