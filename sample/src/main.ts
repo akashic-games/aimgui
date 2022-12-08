@@ -1,5 +1,60 @@
 import * as aimgui from "@akashic-extension/aimgui";
 
+interface ColorDisplayEParameterObject extends aimgui.WidgetEParameterObject {
+	rgb: { r: number; g: number; b: number };
+}
+
+class ColorDisplayE extends aimgui.WidgetE {
+	rgb: { r: number; g: number; b: number };
+
+	constructor(param: ColorDisplayEParameterObject) {
+		super(param);
+		this.rgb = param.rgb;
+	}
+
+	renderSelf(renderer: g.Renderer, _camera?: g.Camera): boolean {
+		renderer.fillRect(0, 0, this.width, this.height, "white");
+		renderer.fillRect(1, 1, this.width - 2, this.height - 2, this.cssColor());
+		return true;
+	}
+
+	cssColor(): string {
+		const r = this.toHexString(Math.round(this.rgb.r * 255));
+		const g = this.toHexString(Math.round(this.rgb.g * 255));
+		const b = this.toHexString(Math.round(this.rgb.b * 255));
+		return `#${r}${g}${b}`;
+	}
+
+	private toHexString(n: number): string {
+		return ("0" + n.toString(16)).substr(-2);
+	}
+}
+
+function colorDisplay(ui: aimgui.Gui, title: string, rgb: { r: number; g: number; b: number }): void {
+	const gwid = ui.titleToGwid(title);
+	const colorDisplay =
+		ui.findWidgetByGwidAndType(gwid, ColorDisplayE) ||
+		new ColorDisplayE({
+			scene: ui.scene,
+			width: ui.font.size,
+			// height: aimgui.widgetHeightByFont(ui.font),
+			height: ui.font.size,
+			title,
+			gwid,
+			memory: ui.memory,
+			rgb
+		});
+
+	colorDisplay.place(ui);
+}
+
+function colorDisplayUi(_ui: aimgui.Gui, title: string, rgb: { r: number; g: number; b: number }): (ui: aimgui.Gui) => boolean {
+	return (ui: aimgui.Gui) => {
+		colorDisplay(ui, title, rgb);
+		return false;
+	};
+}
+
 function main(_param: g.GameMainParameterObject): void {
 	const scene = new g.Scene({ game: g.game, assetIds: ["se"] });
 
@@ -33,7 +88,36 @@ function main(_param: g.GameMainParameterObject): void {
 			scrollToBottom: false
 		};
 		let text = "";
-		let showModalWindow = true;
+		let showModalWindow = false;
+
+		const rgbColor = {
+			r: 0.5,
+			g: 0.5,
+			b: 0.5
+		};
+
+		const sliderDataList = [
+			{
+				min: -1,
+				max: 1,
+				value: 0
+			},
+			{
+				min: -2,
+				max: 0,
+				value: -1
+			},
+			{
+				min: -2,
+				max: 1,
+				value: -0.5
+			},
+			{
+				min: 1,
+				max: 3,
+				value: 2
+			}
+		];
 
 		guiE.run = gui => {
 			if (showModalWindow) {
@@ -150,6 +234,22 @@ function main(_param: g.GameMainParameterObject): void {
 							}
 						});
 					});
+
+				gui.window("Slider Test")
+					.position(Math.round(g.game.width / 5), 32)
+					.size(480, 320)
+					.show(gui => {
+						sliderDataList.forEach(data => {
+							gui.slider(`${data.min}<=>${data.max}`, data, "value", data.min, data.max);
+						});
+						gui.horizontal("color setting", gui => {
+							gui.add(colorDisplayUi(gui, "RGB", rgbColor));
+							gui.slider("R", rgbColor, "r", 0, 1);
+							gui.slider("G", rgbColor, "g", 0, 1);
+							gui.slider("B", rgbColor, "b", 0, 1);
+						});
+					});
+
 			}
 		};
 
