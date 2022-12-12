@@ -1,3 +1,4 @@
+import type { ValueObject } from "../generics";
 import { colors } from "./colors";
 import { drawText, limitText } from "./common";
 import type { WidgetEParameterObject } from "./WidgetE";
@@ -14,7 +15,7 @@ const sliderWidth = 100;
  */
 export interface SliderEParameterObject extends WidgetEParameterObject {
 	height: number;
-	valueObject: Object;
+	valueObject: ValueObject;
 	key: string;
 	min: number;
 	max: number;
@@ -25,7 +26,7 @@ export interface SliderEParameterObject extends WidgetEParameterObject {
  * Slider E。
  */
 export class SliderE extends WidgetE {
-	valueObject: Object;
+	valueObject: ValueObject;
 	key: string;
 	min: number;
 	max: number;

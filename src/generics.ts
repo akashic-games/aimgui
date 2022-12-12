@@ -1,3 +1,5 @@
+export type ValueObject = Record<string, any>;
+
 /**
  * 与えられたオブジェクトの特定の型のプロパティのプロパティ名のユニオン型。
  *

@@ -1,3 +1,4 @@
+import type { ValueObject } from "../generics";
 import { colors } from "./colors";
 import { drawText } from "./common";
 import type { WidgetEParameterObject } from "./WidgetE";
@@ -13,7 +14,7 @@ const radioButtonMargin = 2;
  */
 export interface RadioButtonEParameterObject extends WidgetEParameterObject {
 	height: number;
-	valueObject: Object;
+	valueObject: ValueObject;
 	key: string;
 	buttonValue: unknown;
 	font: g.Font;
@@ -23,7 +24,7 @@ export interface RadioButtonEParameterObject extends WidgetEParameterObject {
  * RadioButton E。
  */
 export class RadioButtonE extends WidgetE {
-	valueObject: any;
+	valueObject: ValueObject;
 	key: string;
 	buttonValue: unknown;
 

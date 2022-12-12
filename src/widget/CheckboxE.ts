@@ -1,4 +1,4 @@
-import type { ExtractPropertyNames } from "../generics";
+import type { ExtractPropertyNames, ValueObject } from "../generics";
 import { colors } from "./colors";
 import { drawText } from "./common";
 import type { WidgetEParameterObject } from "./WidgetE";
@@ -12,7 +12,7 @@ const checkBoxMargin = 2;
 /**
  * CheckBoxE コンストラクタパラメータオブジェクト。
  */
-export interface CheckboxEParameterObject<T> extends WidgetEParameterObject {
+export interface CheckboxEParameterObject<T extends ValueObject> extends WidgetEParameterObject {
 	height: number;
 	valueObject: T;
 	key: ExtractPropertyNames<T, boolean>;
@@ -23,7 +23,7 @@ export interface CheckboxEParameterObject<T> extends WidgetEParameterObject {
  * CheckBox E。
  */
 export class CheckboxE extends WidgetE {
-	valueObject: any;
+	valueObject: ValueObject;
 	key: string;
 
 	get checked(): boolean {
