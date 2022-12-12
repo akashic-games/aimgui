@@ -23,7 +23,8 @@ function main(_param: g.GameMainParameterObject): void {
 			scene,
 			width: g.game.width,
 			height: g.game.height,
-			font
+			font,
+			local: true
 		});
 
 		const valueObject = {

@@ -51,6 +51,12 @@ export interface WidgetEParameterObject extends g.EParameterObject {
  */
 export class WidgetE extends g.E {
 	/**
+	 * null でない時、WidgetEおよびその派生クラスの生成時のローカルフラグをこの値で上書きする。
+	 *
+	 */
+	static local: boolean | null = null;
+
+	/**
 	 * タイトル。
 	 *
 	 * タイトルはボタンのラベルやウインドウのタイトルなどに用いられるとともに、
@@ -73,7 +79,11 @@ export class WidgetE extends g.E {
 	private memory: Memory;
 
 	constructor(param: WidgetEParameterObject) {
-		param.touchable = true;
+		param = {
+			...param,
+			touchable: true,
+			local: WidgetE.local != null ? WidgetE.local : param.local
+		};
 
 		super(param);
 
