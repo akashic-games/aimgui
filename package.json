@@ -1,6 +1,6 @@
 {
   "name": "@akashic-extension/aimgui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Akashic engine Immediate Mode GUI library",
   "scripts": {
     "prepare": "npm run build",

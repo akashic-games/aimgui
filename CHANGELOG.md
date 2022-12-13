@@ -1,9 +1,10 @@
 # CHANGELOG.md
 
-## Unreleased changes
+## 1.0.2
 
 - GUIをローカルで実行することができない不具合の修正。
     - `GuiE` をローカルエンティティとして生成した時、その子要素(WidgetEの派生クラス)もローカルエンティティにする。
+- `ValueObject` 型を定義し、GUIにより直接値を変更されるオブジェクトの型を `ValueObject` を満たすものに制約。
 
 ## 1.0.1
 
