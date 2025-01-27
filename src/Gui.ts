@@ -363,7 +363,7 @@ export class WindowCreator {
 	resizable(v: boolean): this {
 		this.style.resizable = v;
 		return this;
-	 }
+	}
 
 	/**
 	 * スクロールバーの利用可否を設定する。
