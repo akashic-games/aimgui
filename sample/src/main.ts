@@ -73,7 +73,7 @@ function main(_param: g.GameMainParameterObject): void {
 								if (gui.radioButton("Axe🪓", valueObject, "radioButtonValue", "rb2")) {
 									console.log(`checkbox value ${valueObject.radioButtonValue}`);
 								}
-								if (gui.radioButton("Wand🪄", valueObject, "radioButtonValue", "rb3")) {
+								if (gui.rbu("rb3").radioButton("Wand🪄", valueObject, "radioButtonValue")) {
 									console.log(`checkbox value ${valueObject.radioButtonValue}`);
 								}
 							});
