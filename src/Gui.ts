@@ -10,6 +10,14 @@ import {
 import { WindowManager } from "./WindowManager";
 
 /**
+ * ラジオボタン生成役型。
+ *
+ * 実験的機能。将来変更されるかもしれない。
+ */
+interface RadioButtonCreator<U> {
+	radioButton<T extends ValueObject>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>): boolean;
+}
+/**
  * ウィジェットのフォントサイズからウィジェットの高さを求める。
  *
  * @param font ウィジェットの用いるフォント。
@@ -805,6 +813,23 @@ export class Gui {
 	 */
 	radioButton<T extends ValueObject, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
 		return this.add(radioButtonUi(title, valueObject, key, buttonValue));
+	}
+
+	/**
+	 * ラジオボタン型推定ユーティリティ。
+	 *
+	 * 実験的機能。将来変更されるかもしれない。
+	 *
+	 * @param value ラジオボタンが押下された時設定される値。
+	 * @returns
+	 */
+	rbu<U>(value: U): RadioButtonCreator<U> {
+		const _this = this;
+		return {
+			radioButton<T extends ValueObject>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>): boolean {
+				return _this.radioButton(title, valueObject, key, value);
+			}
+		};
 	}
 
 	/**
