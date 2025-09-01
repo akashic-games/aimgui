@@ -15,35 +15,19 @@ export interface Memory {
 }
 
 /**
- * ユーザーメモリ。
- */
-export interface UserMemory<T> {
-	get(): T;
-	set(newValue: T): void;
-}
-
-/**
- * ユーザーメモリの取得。
+ * ユーザーデータの取得。
  *
  * @param memory メモリ
  * @param gwid メモリのグローバルウィジェットID
- * @param initialValue 初期値。メモリが初期化済みの時、使用しない。
- * @returns ユーザーメモリ。
+ * @param initialValue ユーザーデータの初期値。オブジェクトでなければならない。メモリが初期化済みの時、使用しない。
+ * @returns メモリに上のユーザーデータ。
  */
-export function useMemory<T>(memory: Memory, gwid: string, initialValue: T): UserMemory<T> {
+export function useMemory<T extends NonNullable<object>>(memory: Memory, gwid: string, initialValue: T): T {
 	if (!Object.prototype.hasOwnProperty.call(memory.data, gwid)) {
 		memory.data[gwid] = initialValue;
 	}
 
-	const data = memory.data;
-	const userMemory: UserMemory<T> = {
-		get: () => data[gwid] as T,
-		set: (newValue: T) => {
-			data[gwid] = newValue;
-		}
-	};
-
-	return userMemory;
+	return memory.data[gwid] as T;
 }
 
 /**

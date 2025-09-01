@@ -1,6 +1,6 @@
 import type { Constructor, ExtractPropertyNames, ValueObject } from "./generics";
 import { gwidFromIdStack, gwidFromIdStackAndTitle } from "./gwid";
-import type { UserMemory, Memory } from "./Memory";
+import type { Memory } from "./Memory";
 import { useMemory, releaseMemoryHierarchy } from "./Memory";
 import { Placer } from "./Placer";
 import type { WindowStyle } from "./widget";
@@ -778,17 +778,17 @@ export class Gui {
 	}
 
 	/**
-	 * 複合ウィジェットの状態を保持するためのメモリを取得する。
+	 * 複合ウィジェットの状態をメモリから取得する。
 	 *
 	 * beginWidget() と endWidget() の間で使用する。
 	 *
-	 * メモリは複合ウィジェットを配置するウインドウが閉じられた時に解放される。
+	 * 状態は複合ウィジェットを配置するウインドウが閉じられた時に解放される。
 	 *
-	 * @param title メモリのタイトル。
-	 * @param initialValue 初期値。メモリが既に存在する時、使用されない。
-	 * @returns メモリ。
+	 * @param title 状態のタイトル。
+	 * @param initialValue 状態の初期値。オブジェクトでなければならない。メモリが初期化済みの時、使用しない。
+	 * @returns 状態。
 	 */
-	useMemory<T>(title: string, initialValue: T): UserMemory<T> {
+	useMemory<T extends NonNullable<object>>(title: string, initialValue: T): T {
 		return useMemory(this.memory, this.titleToGwid(title), initialValue);
 	}
 

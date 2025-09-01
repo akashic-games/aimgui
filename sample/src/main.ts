@@ -15,9 +15,9 @@ interface GameState {
  * AimGuiの提供するウィジェットを組み合わせて電卓を実装する。このようなものを
  * 関数型複合ウィジェット、またはただ複合ウィジェットと呼ぶ。
  *
- * 複合ウィジェットが状態を管理したい時、beginWidget(), endWidget(), useMemory()
+ * 複合ウィジェットの状態を管理したい時、beginWidget(), endWidget(), useMemory()
  * を用いる。この電卓では、計算のためのスタックと、テキストボックスのスクロール
- * 制御のためのフラグを useMemory で管理している。
+ * 制御のためのフラグを useMemory() で管理している。
  *
  * @param gui AimGui の gui インスタンス。
  * @param title この関数ウィジェットのタイトル。
@@ -30,45 +30,46 @@ function calculatorUi(gui: aimgui.Gui, title: string, initialValue: number): num
 	// 関数型複合ウィジェットは beginWidget() で始まる。
 	gui.beginWidget(title);
 
-	// 電卓のためのメモリを取得する。メモリは初めて確保されるとき、初期化される。
-	// 次回以降のアクセスでは、初期化ずみのメモリが返る。
-	const stackMemory = gui.useMemory("stack", [initialValue]);
-	const scrollMemory = gui.useMemory("scroll", false);
-	const stack = stackMemory.get();
+	// メモリから電卓の状態を取得する。最初の取得の時、初期値が用いられる。
+	// 次回以降のアクセスでは、初期化済みの状態が返る。
+	const state = gui.useMemory("state", {
+		stack: [initialValue],
+		scroll: false,
+	});
 
-	const text = stack.map((v, i) => `#${i}: ${v}`).join("\n");
+	const text = state.stack.map((v, i) => `#${i}: ${v}`).join("\n");
 
 	gui.textBox("calcTextBox", 64, text);
 
 	// 計算機の表示が更新されたとき、テキストボックスをスクロールする。
-	if (scrollMemory.get()) {
+	if (state.scroll) {
 		const textBoxE = gui.getWidget("calcTextBox");
 		if (textBoxE instanceof aimgui.TextBoxE) {
 			textBoxE.scrollToBottom();
 		}
-		scrollMemory.set(false);
+		state.scroll = false;
 	}
 
 	const numberButtons = (numbers: number[]): void => {
 		numbers.forEach(num => {
 			if (gui.button(num.toString())) {
-				stack[stack.length - 1] = stack[stack.length - 1] * 10 + num;
-				scrollMemory.set(true);
+				state.stack[state.stack.length - 1] = state.stack[state.stack.length - 1] * 10 + num;
+				state.scroll = true;
 			}
 		});
 	};
 
 	// スタックの値を取り出して計算し、結果をプッシュする。
 	const calc = (op: (a: number, b: number) => number): void => {
-		if (stack.length < 2) {
+		if (state.stack.length < 2) {
 			return;
 		}
-		const a = stack.pop() || 0;
-		const b = stack.pop() || 0;
+		const a = state.stack.pop() || 0;
+		const b = state.stack.pop() || 0;
 
-		stack.push(op(a, b));
+		state.stack.push(op(a, b));
 
-		scrollMemory.set(true);
+		state.scroll = true;
 	};
 
 	gui.horizontal("789/", gui => {
@@ -97,21 +98,21 @@ function calculatorUi(gui: aimgui.Gui, title: string, initialValue: number): num
 	gui.horizontal("0C+E", gui => {
 		numberButtons([0]);
 		if (gui.button("C")) {
-			stack.length = 0;
-			stack.push(0);
+			state.stack.length = 0;
+			state.stack.push(0);
 		}
 		if (gui.button("+")) {
 			calc((a, b) => b + a);
 		}
 		// 新しい値の入力を開始する時は Enter ボタンを押す。
 		if (gui.button("E")) {
-			stack.push(0);
-			scrollMemory.set(true);
+			state.stack.push(0);
+			state.scroll = true;
 		}
 	});
 
 	if (gui.button("Close")) {
-		result = stack[0];
+		result = state.stack[0];
 	}
 
 	// 関数型複合ウィジェットは endWidget() で終わる。
