@@ -66,6 +66,7 @@
 		"node_modules/@akashic-extension/aimgui/lib/Memory.js",
 		"node_modules/@akashic-extension/aimgui/lib/index.js",
 		"node_modules/@akashic-extension/aimgui/lib/generics.js",
+		"node_modules/@akashic-extension/aimgui/lib/gwid.js",
 		"node_modules/@akashic-extension/aimgui/lib/Gui.js"
 	]
 }

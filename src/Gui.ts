@@ -1,5 +1,7 @@
 import type { Constructor, ExtractPropertyNames, ValueObject } from "./generics";
+import { gwidFromIdStack, gwidFromIdStackAndTitle } from "./gwid";
 import type { Memory } from "./Memory";
+import { useMemory, releaseMemoryHierarchy } from "./Memory";
 import { Placer } from "./Placer";
 import type { WindowStyle } from "./widget";
 import {
@@ -512,21 +514,25 @@ export class Gui {
 	}
 
 	/**
+	 * 現在のグローバルウィジェット ID を得る。
+	 * @returns 現在のグローバルウィジェット ID 。ウィジェットが１つもプッシュされていない場合、null 。
+	 */
+	currentGwid(): string | null {
+		return gwidFromIdStack(this.idStack);
+	}
+
+	/**
 	 * ウィジェットタイトル(ID)からグローバルウィジェット ID を得る。
 	 *
 	 * @param title ウィジェットのタイトル。
 	 * @returns グローバルウィジェット ID 。
 	 */
 	titleToGwid(title: string): string {
-		const separator = "::";
-		const gwid = this.idStack.length > 0 ?
-			this.idStack.join(separator) + separator + title :
-			title;
-		return gwid;
+		return gwidFromIdStackAndTitle(this.idStack, title);
 	}
 
 	/**
-	 * グローバルウィジェットIDとウィジェットの型に一致するウィジェットを返す。
+	 * グローバルウィジェットIDとウィジェットの型の両方が一致するウィジェットを返す。
 	 *
 	 * @param gwid グローバルウィジェット ID 。
 	 * @param ctor ウィジェットのコンストラクタ。
@@ -538,6 +544,8 @@ export class Gui {
 
 	/**
 	 * run() 実行前に実行するメソッド。
+	 *
+	 * 通常、開発者はこれを利用する必要はない。
 	 */
 	preRun(): void {
 		WidgetE.local = this.root.local === true || null;
@@ -546,10 +554,18 @@ export class Gui {
 
 	/**
 	 * run() 実行後に実行するメソッド。
+	 *
+	 * 通常、開発者はこれを利用する必要はない。
 	 */
 	postRun(): void {
 		traverse(this.root, w => w.postRun());
+
+		const closedWindowGwids = this.closedWindowGwids();
+
 		traverse(this.root, w => destroyDeadWidget(w, this.aliveWidgets));
+
+		// メモリはウィンドウ単位で解放する。
+		closedWindowGwids.forEach(gwid => releaseMemoryHierarchy(this.memory, gwid));
 
 		this.windowManager.sortWindows();
 		this.modalWindowManager.sortWindows();
@@ -753,6 +769,37 @@ export class Gui {
 	}
 
 	/**
+	 * 複合ウィジェットを開始する。
+	 *
+	 * @param title
+	 */
+	beginWidget(title: string): void {
+		this.pushWid(title);
+	}
+
+	/**
+	 * 複合ウィジェットの状態をメモリから取得する。
+	 *
+	 * beginWidget() と endWidget() の間で使用する。
+	 *
+	 * 状態は複合ウィジェットを配置するウインドウが閉じられた時に解放される。
+	 *
+	 * @param title 状態のタイトル。
+	 * @param initialValue 状態の初期値。オブジェクトでなければならない。メモリが初期化済みの時、使用しない。
+	 * @returns 状態。
+	 */
+	useMemory<T extends NonNullable<object>>(title: string, initialValue: T): T {
+		return useMemory(this.memory, this.titleToGwid(title), initialValue);
+	}
+
+	/**
+	 * 複合ウィジェットを終了する。
+	 */
+	endWidget(): void {
+		this.popWid();
+	}
+
+	/**
 	 * ラベルを配置する。
 	 *
 	 * @param title タイトル。
@@ -857,5 +904,17 @@ export class Gui {
 		this.root.append(this.windowManager.root);
 		this.root.append(this.coverE);
 		this.root.append(this.modalWindowManager.root);
+	}
+
+	private closedWindowGwids(): string[] {
+		const closedWindowGwids: string[] = [];
+
+		traverse(this.root, widget => {
+			if (widget instanceof WindowE && this.aliveWidgets.indexOf(widget) === -1) {
+				closedWindowGwids.push(widget.gwid);
+			}
+		});
+
+		return closedWindowGwids;
 	}
 }

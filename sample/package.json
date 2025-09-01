@@ -1,7 +1,7 @@
 {
   "name": "aimgui-demo",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AimGui demo",
   "scripts": {
     "postinstall": "npm link ../ && npm run build",
