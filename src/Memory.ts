@@ -31,7 +31,7 @@ export interface UserMemory<T> {
  * @returns ユーザーメモリ。
  */
 export function useMemory<T>(memory: Memory, gwid: string, initialValue: T): UserMemory<T> {
-	if (Object.prototype.hasOwnProperty.call(memory.data, gwid) === false) {
+	if (!Object.prototype.hasOwnProperty.call(memory.data, gwid)) {
 		memory.data[gwid] = initialValue;
 	}
 
