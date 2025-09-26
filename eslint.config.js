@@ -7,7 +7,10 @@ module.exports = [
         languageOptions: {
             sourceType: "module",
             parserOptions: {
-                project: "tsconfig.json",
+                project: [
+                    "tsconfig.json",
+                    "tsconfig.test.json"
+                ],
             }
         },
         ignores: ["**/*.js"]

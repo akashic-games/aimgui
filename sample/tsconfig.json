@@ -7,7 +7,6 @@
     "outDir": "script",
     "types" : [],
     "allowUmdGlobalAccess": true,
-    "noImplicitUseStrict": true,
     "strictNullChecks": true
   },
   "files": [
