@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 1.1.1
+
+- checkbox(), slider() の引数の型推論の改善。
+    - オプショナル型やユニオン型のプロパティを checkbox, slider で指定できるようになった。
+- radioButton() の第５引数 (`buttonValue`) の型推論が正しく行われていなかった不具合の修正。
+- AimGui で this オブジェクトのプロパティを操作する手順をREADMEとサンプルコードに記載。
+
 ## 1.1.0
 
 - 複合ウィジェット実装機能の追加。
