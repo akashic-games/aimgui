@@ -1,9 +1,12 @@
 export type ValueObject = Record<keyof any, any>;
 
 /**
- * 型 U の値を代入可能なプロパティを、キーを型とするプロパティに置き換える。
+ * オブジェクト型 T の各プロパティについて、型 U が代入可能なら
+ * そのプロパティキーをプロパティ値の型とし、代入不能なら never を
+ * プロパティ値の型とするプロパティに置き換えます。
  *
- * 代入不能な時、キーの型は never となる。
+ * 例） ConditionalKeyMirror<{ a: string, b: number }, string>
+ *     => { a: "a", b: never }
  */
 type ConditionalKeyMirror<T extends object, U> = {
 	[K in keyof T]: U extends T[K] ? K : never;
