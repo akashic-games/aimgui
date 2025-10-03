@@ -18,7 +18,9 @@ export const colors = {
 	scrollBarThumb: "#0f87F9",
 
 	windowBg: "#151617",
-	windowFrame: "#4b5b7e",
+	windowFrame: "#6a9dde",
+	windowFrameInactive: "#3a4a5e",
 	windowTitleBarBg: "#27497c",
+	windowTitleBarBgInactive: "#1a2f4a",
 	windowResizeThumb: "#0f87F9"
 };

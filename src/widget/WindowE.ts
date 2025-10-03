@@ -155,7 +155,8 @@ export class WindowE extends WidgetE {
 		}
 
 		// ウィンドウ枠。
-		this.drawFrame(renderer, colors.windowFrame);
+		const frameColor = this.zOrder === 0 ? colors.windowFrame : colors.windowFrameInactive;
+		this.drawFrame(renderer, frameColor);
 
 		// DEBUG: レイアウトに関する領域を描画する。
 		// this.drawLayout(renderer);
@@ -215,7 +216,8 @@ export class WindowE extends WidgetE {
 
 	private drawTitleBar(renderer: g.Renderer): void {
 		// バー。
-		renderer.fillRect(0, 0, this.width, this.titleBarHeight, colors.windowTitleBarBg);
+		const bgColor = this.zOrder === 0 ? colors.windowTitleBarBg : colors.windowTitleBarBgInactive;
+		renderer.fillRect(0, 0, this.width, this.titleBarHeight, bgColor);
 
 		// タイトル。
 
