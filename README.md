@@ -72,30 +72,6 @@ guiE.run = gui => {
 
 ![Debug Tool ウインドウ](https://raw.githubusercontent.com/akashic-games/aimgui/main/img/sample.gif "サンプル")
 
-### this パラメータの使用
-
-AimGui で `this` のプロパティを操作する関数では、第一引数に `this` の型を明示的に宣言する必要があります。これにより、TypeScript の型推論が正しく動作し、`slider` などのウィジェットで `this` のプロパティを安全に操作できます。
-
-```typescript
-class GameScene extends g.Scene {
-    soundVolume: number = 0.5;
-
-    // AimGui で this のプロパティを操作するときは第一引数に this の型を宣言します
-    // 呼び出し側は this を与える必要はありません
-    setupToolUi(this: GameScene, guiE: aimgui.GuiE): void {
-        guiE.run = gui => {
-            gui.window("設定")
-                .show(gui => {
-                    // this.soundVolume を操作するスライダー
-                    gui.slider("ボリューム", this, "soundVolume", 0, 1);
-                });
-        };
-    }
-}
-```
-
-より詳しい使い方は、APIリファレンスと付属のサンプルを参照ください。
-
 ## 利用方法
 
 [akashic-cli](https://github.com/akashic-games/akashic-cli)をインストールした後、
