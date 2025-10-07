@@ -1,4 +1,4 @@
-import type { ExtractPropertyNames, ValueObject } from "../generics";
+import type { AssignableKeys, ValueObject } from "../generics";
 import { colors } from "./colors";
 import { drawText } from "./common";
 import type { WidgetEParameterObject } from "./WidgetE";
@@ -15,7 +15,7 @@ const checkBoxMargin = 2;
 export interface CheckboxEParameterObject<T extends ValueObject> extends WidgetEParameterObject {
 	height: number;
 	valueObject: T;
-	key: ExtractPropertyNames<T, boolean>;
+	key: AssignableKeys<T, boolean>;
 	font: g.Font;
 }
 

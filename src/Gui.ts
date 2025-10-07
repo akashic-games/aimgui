@@ -1,4 +1,4 @@
-import type { Constructor, ExtractPropertyNames, ValueObject } from "./generics";
+import type { AssignableKeys, Constructor, ValueObject } from "./generics";
 import { gwidFromIdStack, gwidFromIdStackAndTitle } from "./gwid";
 import type { Memory } from "./Memory";
 import { useMemory, releaseMemoryHierarchy } from "./Memory";
@@ -101,7 +101,7 @@ function buttonUi(title: string): (ui: Gui) => boolean {
 	return (ui: Gui) => button(ui, title);
 }
 
-function checkbox<T extends ValueObject>(ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, boolean>): boolean {
+function checkbox<T extends ValueObject>(ui: Gui, title: string, valueObject: T, key: AssignableKeys<T, boolean>): boolean {
 	const gwid = ui.titleToGwid(title);
 	const checkbox = ui.findWidgetByGwidAndType(gwid, CheckboxE) ||
 		new CheckboxE({
@@ -124,16 +124,16 @@ function checkbox<T extends ValueObject>(ui: Gui, title: string, valueObject: T,
 	return checkbox.pressed;
 }
 
-function checkboxUi<T extends ValueObject>(title: string, valueObject: T, key: ExtractPropertyNames<T, boolean>): (ui: Gui) => boolean {
+function checkboxUi<T extends ValueObject>(title: string, valueObject: T, key: AssignableKeys<T, boolean>): (ui: Gui) => boolean {
 	return (ui: Gui) => checkbox<T>(ui, title, valueObject, key);
 }
 
-function radioButton<T extends ValueObject, U>(
+function radioButton<T extends ValueObject, K extends keyof T>(
 	ui: Gui,
 	title: string,
 	valueObject: T,
-	key: ExtractPropertyNames<T, U>,
-	buttonValue: U
+	key: K,
+	buttonValue: T[K]
 ): boolean {
 	const gwid = ui.titleToGwid(title);
 	const radioButton =
@@ -159,14 +159,14 @@ function radioButton<T extends ValueObject, U>(
 	return radioButton.pressed;
 }
 
-function radioButtonUi<T extends ValueObject, U>(
-	title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U
+function radioButtonUi<T extends ValueObject, K extends keyof T>(
+	title: string, valueObject: T, key: K, buttonValue: T[K]
 ): (ui: Gui) => boolean {
-	return (ui: Gui) => radioButton<T, U>(ui, title, valueObject, key, buttonValue);
+	return (ui: Gui) => radioButton<T, K>(ui, title, valueObject, key, buttonValue);
 }
 
 function slider<T extends ValueObject>(
-	ui: Gui, title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
+	ui: Gui, title: string, valueObject: T, key: AssignableKeys<T, number>, min: number, max: number
 ): boolean {
 	const gwid = ui.titleToGwid(title);
 	const slider =
@@ -194,7 +194,7 @@ function slider<T extends ValueObject>(
 }
 
 function sliderUi<T extends ValueObject>(
-	title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number
+	title: string, valueObject: T, key: AssignableKeys<T, number>, min: number, max: number
 ): (ui: Gui) => boolean {
 	return (ui: Gui) => slider<T>(ui, title, valueObject, key, min, max);
 }
@@ -837,7 +837,7 @@ export class Gui {
 	 * @param key チェックボックスのオン・オフの真偽値のプロパティ名。
 	 * @returns チェックボックスが押下された時、真。
 	 */
-	checkbox<T extends ValueObject>(title: string, valueObject: T, key: ExtractPropertyNames<T, boolean>): boolean {
+	checkbox<T extends ValueObject>(title: string, valueObject: T, key: AssignableKeys<T, boolean>): boolean {
 		return this.add(checkboxUi(title, valueObject, key));
 	}
 
@@ -850,7 +850,7 @@ export class Gui {
 	 * @param buttonValue ラジオボタンがオンの時 valueObject に設定される値。
 	 * @returns ラジオボタンが押下された時、真。
 	 */
-	radioButton<T extends ValueObject, U>(title: string, valueObject: T, key: ExtractPropertyNames<T, U>, buttonValue: U): boolean {
+	radioButton<T extends ValueObject, K extends keyof T>(title: string, valueObject: T, key: K, buttonValue: T[K]): boolean {
 		return this.add(radioButtonUi(title, valueObject, key, buttonValue));
 	}
 
@@ -864,7 +864,7 @@ export class Gui {
 	 * @param max 最大値。
 	 * @returns スライダーによって値が変更された時、真。
 	 */
-	slider<T extends ValueObject>(title: string, valueObject: T, key: ExtractPropertyNames<T, number>, min: number, max: number): boolean {
+	slider<T extends ValueObject>(title: string, valueObject: T, key: AssignableKeys<T, number>, min: number, max: number): boolean {
 		return this.add(sliderUi(title, valueObject, key, min, max));
 	}
 

@@ -1,10 +1,9 @@
 import * as aimgui from "@akashic-extension/aimgui";
 
 /**
- * ゲームステート。
+ * バトルステート。
  */
-interface GameState {
-	soundVolume: number;
+interface BattleState {
 	currentWeapon: "sword" | "axe" | "wand";
 	battleReword: number;
 }
@@ -128,163 +127,34 @@ function calculatorUi(gui: aimgui.Gui, title: string, initialValue: number): num
  * @param guiE AimGui の guiE インスタンス。
  * @param gameState ゲームの状態。
  */
-function toolUi(scene: g.Scene, guiE: aimgui.GuiE, gameState: GameState): void {
-	const toolUiState = {
-		scrollToBottom: false
-	};
-	let text = "";
-	let showModalWindow = true;
-	let showCalculator = false;
 
-	guiE.run = gui => {
-		if (showModalWindow) {
-			gui.modalWindow("Let's Try AimGui !")
-				.size(256, 46)
-				.show(gui => {
-					gui.horizontal("horizon", gui => {
-						if (gui.button("START")) {
-							showModalWindow = false;
-						}
-					});
-				});
-			return;
-		}
 
-		gui.window("Debug Tool")
-			.position(16, 16)
-			.size(240, 240)
-			.show(gui => {
-				gui.label("Super Cool Game v0.1.0");
+class GameScene extends g.Scene {
+	soundVolume: number;
 
-				if (gui.button("Back to Title")) {
-					showModalWindow = true;
-					console.log("back-to-title Button clicked!");
-				}
+	battleState: BattleState;
 
-				gui.margin("margin 1");
+	constructor(param: g.SceneParameterObject) {
+		super(param);
 
-				gui.horizontal("calculator_horizon", gui => {
-					gui.label(`Battle Reward: ${gameState.battleReword}`);
-					if (gui.button("Calc")) {
-						showCalculator = true;
-					}
-				});
+		this.soundVolume = 0.5;
 
-				gui.label("Weapon Setting");
-				gui.horizontal("weaponRadioButtons", _ui => {
-					if (gui.radioButton("Sword⚔️", gameState, "currentWeapon", "sword")) {
-						console.log(`current weapon ${gameState.currentWeapon}`);
-					}
-					if (gui.radioButton("Axe🪓", gameState, "currentWeapon", "axe")) {
-						console.log(`current weapon ${gameState.currentWeapon}`);
-					}
-					if (gui.radioButton("Wand🪄", gameState, "currentWeapon", "wand")) {
-						console.log(`current weapon ${gameState.currentWeapon}`);
-					}
-				});
+		this.battleState = {
+			currentWeapon: "sword",
+			battleReword: 100,
+		};
 
-				gui.collapsing("System", gui => {
-					gui.horizontal("system buttons", gui => {
-						if (gui.button("Save")) {
-							console.log("Save button clicked");
-						}
-						if (gui.button("Load")) {
-							console.log("Load button clicked");
-						}
-					});
-					gui.collapsing("Difficulty Level", gui => {
-						if (gui.button("Easy")) {
-							console.log("Button Easy clicked");
-						}
-						if (gui.button("Normal")) {
-							console.log("Button Normal clicked");
-						}
-						if (gui.button("Hard")) {
-							console.log("Button Hard clicked");
-						}
-					});
-				});
+		this.onLoad.add(() => this.handleLoad());
+	}
 
-				gui.collapsing("Sound", gui => {
-					if (gui.slider("Volume", gameState, "soundVolume", 0, 1)) {
-						console.log(`Volume slider value ${gameState.soundVolume}`);
-					}
-					if (gui.button("Play")) {
-						scene.asset.getAudio("/audio/se").play().changeVolume(gameState.soundVolume);
-						console.log("sound-test Button clicked");
-					}
-				});
-			});
-
-		if (showCalculator) {
-			gui.window("RPN Calculator")
-				.position(g.game.width - 236, 32)
-				.size(120, 208)
-				.resizable(false)
-				.show(gui => {
-					const result = calculatorUi(gui, "RPN Calculator", 0);
-					if (result !== null) {
-						gameState.battleReword = result;
-						showCalculator = false;
-					}
-				});
-		}
-
-		gui.window("Battle Test")
-			.position(320, 96)
-			.size(320, 240)
-			.show(gui => {
-				let newLine: string | null = null;
-				gui.horizontal("horizon", gui => {
-					gui.label("Command:");
-					if (gui.button("Attack")) {
-						const monsterName = g.game.random.generate() < 0.5 ? "slime" : "giant";
-						newLine = `The ${monsterName} is defeated!`;
-					}
-					if (gui.button("Spell")) {
-						const monsterName = g.game.random.generate() < 0.5 ? "wolf" : "sorcerer";
-						newLine = `You chanted the spell of Sleep and the ${monsterName} is asleep.`;
-					}
-					if (gui.button("Defend")) {
-						newLine = `Your HP decreased by ${Math.round(g.game.random.generate() * 50)}.`;
-					}
-					if (newLine) {
-						text += text === "" ? newLine : `\n${newLine}`;
-					}
-				});
-
-				gui.collapsing("Log", gui => {
-					let clicked = false;
-					gui.horizontal("Log UI", gui => {
-						clicked = gui.checkbox("Scroll To Bottom", toolUiState, "scrollToBottom");
-						if (gui.button("Clear Log")) {
-							text = "";
-						}
-					});
-					gui.textBox("logTextBox", 128, text);
-					if (toolUiState.scrollToBottom && (newLine || clicked)) {
-						const textBoxE = gui.getWidget("logTextBox");
-						if (textBoxE instanceof aimgui.TextBoxE) {
-							textBoxE.scrollToBottom();
-						}
-					}
-				});
-			});
-	};
-}
-
-function main(_param: g.GameMainParameterObject): void {
-	const scene = new g.Scene({ game: g.game, assetIds: ["se"] });
-
-	scene.onLoad.add(() => {
-
+	handleLoad(): void {
 		const background = new g.FilledRect({
-			scene: scene,
+			scene: this,
 			cssColor: "#2C7CFF",
 			width: g.game.width,
 			height: g.game.height
 		});
-		scene.append(background);
+		this.append(background);
 
 		// AimGui のためのフォント。フォントの大きさでウィジェットの大きさが決まる
 		const font = new g.DynamicFont({
@@ -295,25 +165,170 @@ function main(_param: g.GameMainParameterObject): void {
 		});
 
 		const guiE = new aimgui.GuiE({
-			scene,
+			scene: this,
 			width: g.game.width,
 			height: g.game.height,
 			font,
 			local: true
 		});
 
-		// AimGui で操作するデータ。
-		const gameState: GameState = {
-			soundVolume: 0.5,
-			currentWeapon: "sword",
-			battleReword: 100,
+		this.setupToolUi(guiE);
+
+		this.append(guiE);
+	}
+
+	// AimGui で this のプロパティを操作するときは第一引数に this の型を宣言します。
+	// このサンプルでは、slider で this.soundVolume を操作するために宣言しています。
+	// 呼び出し側は this を与える必要はありません。
+	setupToolUi(this: GameScene, guiE: aimgui.GuiE): void {
+		const battleState = this.battleState;
+		const toolUiState = {
+			scrollToBottom: false
 		};
+		let text = "";
+		let showModalWindow = true;
+		let showCalculator = false;
 
-		toolUi(scene, guiE, gameState);
+		guiE.run = gui => {
+			if (showModalWindow) {
+				gui.modalWindow("Let's Try AimGui !")
+					.size(256, 46)
+					.show(gui => {
+						gui.horizontal("horizon", gui => {
+							if (gui.button("START")) {
+								showModalWindow = false;
+							}
+						});
+					});
+				return;
+			}
 
-		scene.append(guiE);
-	});
+			gui.window("Debug Tool")
+				.position(16, 16)
+				.size(240, 240)
+				.show(gui => {
+					gui.label("Super Cool Game v0.1.0");
 
+					if (gui.button("Back to Title")) {
+						showModalWindow = true;
+						console.log("back-to-title Button clicked!");
+					}
+
+					gui.margin("margin 1");
+
+					gui.horizontal("calculator_horizon", gui => {
+						gui.label(`Battle Reward: ${battleState.battleReword}`);
+						if (gui.button("Calc")) {
+							showCalculator = true;
+						}
+					});
+
+					gui.label("Weapon Setting");
+					gui.horizontal("weaponRadioButtons", _ui => {
+						if (gui.radioButton("Sword⚔️", battleState, "currentWeapon", "sword")) {
+							console.log(`current weapon ${battleState.currentWeapon}`);
+						}
+						if (gui.radioButton("Axe🪓", battleState, "currentWeapon", "axe")) {
+							console.log(`current weapon ${battleState.currentWeapon}`);
+						}
+						if (gui.radioButton("Wand🪄", battleState, "currentWeapon", "wand")) {
+							console.log(`current weapon ${battleState.currentWeapon}`);
+						}
+					});
+
+					gui.collapsing("System", gui => {
+						gui.horizontal("system buttons", gui => {
+							if (gui.button("Save")) {
+								console.log("Save button clicked");
+							}
+							if (gui.button("Load")) {
+								console.log("Load button clicked");
+							}
+						});
+						gui.collapsing("Difficulty Level", gui => {
+							if (gui.button("Easy")) {
+								console.log("Button Easy clicked");
+							}
+							if (gui.button("Normal")) {
+								console.log("Button Normal clicked");
+							}
+							if (gui.button("Hard")) {
+								console.log("Button Hard clicked");
+							}
+						});
+					});
+
+					gui.collapsing("Sound", gui => {
+						if (gui.slider("Volume", this, "soundVolume", 0, 1)) {
+							console.log(`Volume slider value ${this.soundVolume}`);
+						}
+						if (gui.button("Play")) {
+							this.asset.getAudio("/audio/se").play().changeVolume(this.soundVolume);
+							console.log("sound-test Button clicked");
+						}
+					});
+				});
+
+			if (showCalculator) {
+				gui.window("RPN Calculator")
+					.position(g.game.width - 236, 32)
+					.size(120, 208)
+					.resizable(false)
+					.show(gui => {
+						const result = calculatorUi(gui, "RPN Calculator", 0);
+						if (result !== null) {
+							battleState.battleReword = result;
+							showCalculator = false;
+						}
+					});
+			}
+
+			gui.window("Battle Test")
+				.position(320, 96)
+				.size(320, 240)
+				.show(gui => {
+					let newLine: string | null = null;
+					gui.horizontal("horizon", gui => {
+						gui.label("Command:");
+						if (gui.button("Attack")) {
+							const monsterName = g.game.random.generate() < 0.5 ? "slime" : "giant";
+							newLine = `The ${monsterName} is defeated!`;
+						}
+						if (gui.button("Spell")) {
+							const monsterName = g.game.random.generate() < 0.5 ? "wolf" : "sorcerer";
+							newLine = `You chanted the spell of Sleep and the ${monsterName} is asleep.`;
+						}
+						if (gui.button("Defend")) {
+							newLine = `Your HP decreased by ${Math.round(g.game.random.generate() * 50)}.`;
+						}
+						if (newLine) {
+							text += text === "" ? newLine : `\n${newLine}`;
+						}
+					});
+
+					gui.collapsing("Log", gui => {
+						let clicked = false;
+						gui.horizontal("Log UI", gui => {
+							clicked = gui.checkbox("Scroll To Bottom", toolUiState, "scrollToBottom");
+							if (gui.button("Clear Log")) {
+								text = "";
+							}
+						});
+						gui.textBox("logTextBox", 128, text);
+						if (toolUiState.scrollToBottom && (newLine || clicked)) {
+							const textBoxE = gui.getWidget("logTextBox");
+							if (textBoxE instanceof aimgui.TextBoxE) {
+								textBoxE.scrollToBottom();
+							}
+						}
+					});
+				});
+		};
+	}
+}
+
+function main(_param: g.GameMainParameterObject): void {
+	const scene = new GameScene({ game: g.game, assetIds: ["se"] });
 	g.game.pushScene(scene);
 }
 

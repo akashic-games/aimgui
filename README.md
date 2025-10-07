@@ -72,8 +72,6 @@ guiE.run = gui => {
 
 ![Debug Tool ウインドウ](https://raw.githubusercontent.com/akashic-games/aimgui/main/img/sample.gif "サンプル")
 
-より詳しい使い方は、APIリファレンスと付属のサンプルを参照ください。
-
 ## 利用方法
 
 [akashic-cli](https://github.com/akashic-games/akashic-cli)をインストールした後、
