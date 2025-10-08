@@ -1,6 +1,6 @@
 import type { AABB} from "@akashic-extension/collision-js";
 import { Vec2 } from "@akashic-extension/collision-js";
-import type { Gui } from "..";
+import { type WindowE, type Gui } from "..";
 import type { Memory } from "../Memory";
 import type { Placer } from "../Placer";
 
@@ -52,7 +52,6 @@ export interface WidgetEParameterObject extends g.EParameterObject {
 export class WidgetE extends g.E {
 	/**
 	 * null でない時、WidgetEおよびその派生クラスの生成時のローカルフラグをこの値で上書きする。
-	 *
 	 */
 	static local: boolean | null = null;
 
@@ -70,6 +69,11 @@ export class WidgetE extends g.E {
 	 * グローバルウィジェットIDは Gui インスタンス内で一意の識別子である。
 	 */
 	gwid: string;
+
+	/**
+	 * このウィジェットの親ウィンドウ。
+	 */
+	parentWindow: WindowE | null;
 
 	protected desiredWidth?: number;
 	protected desiredHeight?: number;
@@ -94,6 +98,9 @@ export class WidgetE extends g.E {
 		this.desiredHeight = param.desiredHeight;
 		this.minWidth = param.minWidth;
 		this.minHeight = param.minHeight;
+		this.parentWindow = null;
+
+		this.onPointDown.add(() => this.focusWindow());
 	}
 
 	/**
@@ -126,6 +133,13 @@ export class WidgetE extends g.E {
 		renderer.fillRect(width - 1, 0, 1, height - 1, cssColor);
 		renderer.fillRect(1, height - 1, width - 1, 1, cssColor);
 		renderer.fillRect(0, 1, 1, height - 1, cssColor);
+	}
+
+	/**
+	 * 親ウインドウを最前面に移動する。
+	 */
+	private focusWindow(): void {
+		this.parentWindow?.moveFront();
 	}
 
 	protected placeSelf(placer: Placer, _addContents?: (ui: Gui) => void): void {

@@ -29,7 +29,7 @@ export class WindowManager {
 		}
 
 		if (this.root.children) {
-			const windowEs = this.root.children.filter(child => child instanceof WindowE) as WindowE[];
+			const windowEs = this.root.children.filter(child => child instanceof WindowE);
 			for (let i = 0; i < windowEs.length; i++) {
 				const windowE = windowEs[i];
 				windowE.zOrder = (windowEs.length - 1) - i;
@@ -46,6 +46,7 @@ export class WindowManager {
 	 * @param windowE ウインドウ。
 	 */
 	addNewWindow(windowE: WindowE): void {
+		windowE.windowManager = this;
 		this.newWindowEs.push(windowE);
 	}
 
@@ -55,6 +56,7 @@ export class WindowManager {
 	 * @param windowE ウインドウ。
 	 */
 	moveFront(windowE: WindowE): void {
+		windowE.windowManager = this;
 		this.windowEsToBeMovedFront.push(windowE);
 	}
 }
