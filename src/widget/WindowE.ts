@@ -162,7 +162,7 @@ export class WindowE extends WidgetE {
 		}
 
 		// ウィンドウ枠。
-		const frameColor = this.zOrder === 0 ? colors.windowFrame : colors.windowFrameInactive;
+		const frameColor = this.isActive() ? colors.windowFrame : colors.windowFrameInactive;
 		this.drawFrame(renderer, frameColor);
 
 		// DEBUG: レイアウトに関する領域を描画する。
@@ -222,7 +222,7 @@ export class WindowE extends WidgetE {
 
 	private drawTitleBar(renderer: g.Renderer): void {
 		// バー。
-		const bgColor = this.zOrder === 0 ? colors.windowTitleBarBg : colors.windowTitleBarBgInactive;
+		const bgColor = this.isActive() ? colors.windowTitleBarBg : colors.windowTitleBarBgInactive;
 		renderer.fillRect(0, 0, this.width, this.titleBarHeight, bgColor);
 
 		// タイトル。
@@ -378,5 +378,14 @@ export class WindowE extends WidgetE {
 		this.scrollBar.scrollBy(this.getScrollArea(), 0);
 
 		this.modified();
+	}
+
+	/**
+	 * ウインドウがアクティブ（最前面）かどうかを調べる。
+	 *
+	 * @returns ウインドウがアクティブの時、真。
+	 */
+	private isActive(): boolean {
+		return this.windowManager ? this.windowManager.isActive(this) : false;
 	}
 }

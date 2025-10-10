@@ -100,7 +100,7 @@ export class WidgetE extends g.E {
 		this.minHeight = param.minHeight;
 		this.parentWindow = null;
 
-		this.onPointDown.add(() => this.focusWindow());
+		this.onPointDown.add(() => this.moveParentWindowFront());
 	}
 
 	/**
@@ -138,7 +138,7 @@ export class WidgetE extends g.E {
 	/**
 	 * 親ウインドウを最前面に移動する。
 	 */
-	private focusWindow(): void {
+	private moveParentWindowFront(): void {
 		this.parentWindow?.moveFront();
 	}
 

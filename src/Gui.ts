@@ -574,10 +574,18 @@ export class Gui {
 		this.windowManager.sortWindows();
 		this.modalWindowManager.sortWindows();
 
-		this.coverE.touchable = !!(
+		const modalWindowsExist = !!(
 			this.modalWindowManager.root.children &&
 			this.modalWindowManager.root.children.length
 		);
+
+		if (modalWindowsExist) {
+			this.coverE.touchable = true;
+			this.windowManager.enabled = false;
+		} else {
+			this.coverE.touchable = false;
+			this.windowManager.enabled = true;
+		}
 
 		WidgetE.local = null;
 	}
