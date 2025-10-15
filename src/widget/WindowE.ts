@@ -1,5 +1,6 @@
 import type { AABB, Vec2Like } from "@akashic-extension/collision-js";
 import { aabbToVec, Vec2 } from "@akashic-extension/collision-js";
+import type { WindowManager } from "../WindowManager";
 import { colors } from "./colors";
 import { drawText, limitText } from "./common";
 import type { ScrollArea} from "./ScrollBar";
@@ -71,6 +72,11 @@ export class WindowE extends WidgetE {
 	 */
 	bounds: AABB;
 
+	/**
+	 * ウインドウマネージャへの参照。
+	 */
+	windowManager: WindowManager | null;
+
 	private font: g.Font;
 	private cache: g.Surface | null;
 	private margin: number;
@@ -108,6 +114,7 @@ export class WindowE extends WidgetE {
 		this.startWidth = 0;
 		this.startHeight = 0;
 		this.scrollBar = new ScrollBar({ avoidsResizeThumb: true });
+		this.windowManager = null;
 
 		this.bounds = {
 			min: { x: 0, y: 0 },
@@ -155,7 +162,8 @@ export class WindowE extends WidgetE {
 		}
 
 		// ウィンドウ枠。
-		this.drawFrame(renderer, colors.windowFrame);
+		const frameColor = this.isActive() ? colors.windowFrame : colors.windowFrameInactive;
+		this.drawFrame(renderer, frameColor);
 
 		// DEBUG: レイアウトに関する領域を描画する。
 		// this.drawLayout(renderer);
@@ -165,13 +173,6 @@ export class WindowE extends WidgetE {
 	}
 
 	shouldFindChildrenByPoint(point: g.CommonOffset): boolean {
-		// 最前面にないウインドウの子要素のタッチを扱わない。
-		// これによってウインドウ自体にタッチイベントが伝播し、
-		// 背面のウインドウが全面に移動するようになる。
-		if (this.zOrder !== 0) {
-			return false;
-		}
-
 		const insideWindow =
 			0 < point.x && point.x < this.width &&
 			this.titleBarHeight < point.y && point.y < this.height;
@@ -181,6 +182,12 @@ export class WindowE extends WidgetE {
 		const insideScrollBar = this.scrollBar.intersectBar(this.getScrollArea(), point);
 
 		return insideWindow && !insideResizeThumb && !insideScrollBar;
+	}
+
+	moveFront(): void {
+		if (this.zOrder !== 0 && this.windowManager) {
+			this.windowManager.moveFront(this);
+		}
 	}
 
 	protected getMemory(): WindowStyle {
@@ -215,7 +222,8 @@ export class WindowE extends WidgetE {
 
 	private drawTitleBar(renderer: g.Renderer): void {
 		// バー。
-		renderer.fillRect(0, 0, this.width, this.titleBarHeight, colors.windowTitleBarBg);
+		const bgColor = this.isActive() ? colors.windowTitleBarBg : colors.windowTitleBarBgInactive;
+		renderer.fillRect(0, 0, this.width, this.titleBarHeight, bgColor);
 
 		// タイトル。
 
@@ -370,5 +378,14 @@ export class WindowE extends WidgetE {
 		this.scrollBar.scrollBy(this.getScrollArea(), 0);
 
 		this.modified();
+	}
+
+	/**
+	 * ウインドウがアクティブ（最前面）かどうかを調べる。
+	 *
+	 * @returns ウインドウがアクティブの時、真。
+	 */
+	private isActive(): boolean {
+		return this.windowManager ? this.windowManager.isActive(this) : false;
 	}
 }

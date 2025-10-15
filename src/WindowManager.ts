@@ -8,11 +8,24 @@ import { WindowE } from "./widget";
 export class WindowManager {
 	root: g.E;
 
+	/**
+	 * ウィンドウマネージャが有効かどうか。
+	 *
+	 * 真の時、このウインドウマネージャの管理するウインドウのうち、最前面のものが
+	 * アクティブとなる。
+	 * 偽の時、このウインドウマネージャの管理するウインドウはすべて非アクティブとなる。
+	 *
+	 * 複数のWindowManagerが存在する場合、外部からこのプロパティを設定することで、
+	 * どのWindowManagerのウインドウをアクティブにするかを制御できる。
+	 */
+	enabled: boolean;
+
 	private newWindowEs: WindowE[];
 	private windowEsToBeMovedFront: WindowE[];
 
 	constructor(scene: g.Scene) {
 		this.root = new g.E({ scene });
+		this.enabled = true;
 		this.newWindowEs = [];
 		this.windowEsToBeMovedFront = [];
 	}
@@ -29,7 +42,7 @@ export class WindowManager {
 		}
 
 		if (this.root.children) {
-			const windowEs = this.root.children.filter(child => child instanceof WindowE) as WindowE[];
+			const windowEs = this.root.children.filter(child => child instanceof WindowE);
 			for (let i = 0; i < windowEs.length; i++) {
 				const windowE = windowEs[i];
 				windowE.zOrder = (windowEs.length - 1) - i;
@@ -46,6 +59,7 @@ export class WindowManager {
 	 * @param windowE ウインドウ。
 	 */
 	addNewWindow(windowE: WindowE): void {
+		windowE.windowManager = this;
 		this.newWindowEs.push(windowE);
 	}
 
@@ -55,6 +69,25 @@ export class WindowManager {
 	 * @param windowE ウインドウ。
 	 */
 	moveFront(windowE: WindowE): void {
+		windowE.windowManager = this;
 		this.windowEsToBeMovedFront.push(windowE);
+	}
+
+	/**
+	 * ウインドウがアクティブ（最前面）かどうかを調べる。
+	 *
+	 * @param windowE ウインドウ。
+	 * @returns ウインドウがアクティブの時、真。
+	 */
+	isActive(windowE: WindowE): boolean {
+		if (!this.enabled) {
+			return false;
+		}
+
+		if (this.root.children && this.root.children.length > 0) {
+			const top = this.root.children[this.root.children.length - 1];
+			return top === windowE;
+		}
+		return false;
 	}
 }

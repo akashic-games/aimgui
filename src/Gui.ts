@@ -460,6 +460,8 @@ export class Gui {
 	private windowManager: WindowManager;
 	private modalWindowManager: WindowManager;
 
+	private currentWindow: WindowE | null = null;
+
 	private idStack: string[];
 	private widgetStack: WidgetE[];
 	private placerStack: Placer[];
@@ -486,6 +488,8 @@ export class Gui {
 
 		this.windowManager = new WindowManager(scene);
 		this.modalWindowManager = new WindowManager(scene);
+
+		this.currentWindow = null;
 
 		this.widgetStack = [];
 		this.idStack = [];
@@ -570,10 +574,18 @@ export class Gui {
 		this.windowManager.sortWindows();
 		this.modalWindowManager.sortWindows();
 
-		this.coverE.touchable = !!(
+		const modalWindowsExist = !!(
 			this.modalWindowManager.root.children &&
 			this.modalWindowManager.root.children.length
 		);
+
+		if (modalWindowsExist) {
+			this.coverE.touchable = true;
+			this.windowManager.enabled = false;
+		} else {
+			this.coverE.touchable = false;
+			this.windowManager.enabled = true;
+		}
 
 		WidgetE.local = null;
 	}
@@ -600,7 +612,7 @@ export class Gui {
 					font: this.font,
 					title,
 					gwid,
-					memory: this.memory
+					memory: this.memory,
 				});
 
 			if (!found) {
@@ -621,7 +633,11 @@ export class Gui {
 			this.pushPlacer(placer);
 			this.pushWid(title);
 
+			this.currentWindow = window;
+
 			addContents(this);
+
+			this.currentWindow = null;
 
 			this.popWid();
 			this.popPlacer();
@@ -664,7 +680,7 @@ export class Gui {
 					title,
 					gwid,
 					scrollable: false,
-					memory: this.memory
+					memory: this.memory,
 				});
 
 			if (!found) {
@@ -685,7 +701,11 @@ export class Gui {
 			this.pushPlacer(placer);
 			this.pushWid(title);
 
+			this.currentWindow = window;
+
 			addContents(this);
+
+			this.currentWindow = null;
 
 			this.popWid();
 			this.popPlacer();
@@ -705,6 +725,7 @@ export class Gui {
 	 * @param widgetE ウィジェット。
 	 */
 	attach(widgetE: WidgetE): void {
+		widgetE.ownerWindow = this.currentWindow;
 		this.currentWidget?.append(widgetE);
 		this.aliveWidgets.push(widgetE);
 	}
