@@ -71,9 +71,9 @@ export class WidgetE extends g.E {
 	gwid: string;
 
 	/**
-	 * このウィジェットの親ウィンドウ。
+	 * このウィジェットが所属するウィンドウ。
 	 */
-	parentWindow: WindowE | null;
+	ownerWindow: WindowE | null;
 
 	protected desiredWidth?: number;
 	protected desiredHeight?: number;
@@ -98,9 +98,9 @@ export class WidgetE extends g.E {
 		this.desiredHeight = param.desiredHeight;
 		this.minWidth = param.minWidth;
 		this.minHeight = param.minHeight;
-		this.parentWindow = null;
+		this.ownerWindow = null;
 
-		this.onPointDown.add(() => this.moveParentWindowFront());
+		this.onPointDown.add(() => this.moveOwnerWindowFront());
 	}
 
 	/**
@@ -136,10 +136,10 @@ export class WidgetE extends g.E {
 	}
 
 	/**
-	 * 親ウインドウを最前面に移動する。
+	 * 所属ウインドウを最前面に移動する。
 	 */
-	private moveParentWindowFront(): void {
-		this.parentWindow?.moveFront();
+	private moveOwnerWindowFront(): void {
+		this.ownerWindow?.moveFront();
 	}
 
 	protected placeSelf(placer: Placer, _addContents?: (ui: Gui) => void): void {

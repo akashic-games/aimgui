@@ -725,7 +725,7 @@ export class Gui {
 	 * @param widgetE ウィジェット。
 	 */
 	attach(widgetE: WidgetE): void {
-		widgetE.parentWindow = this.currentWindow;
+		widgetE.ownerWindow = this.currentWindow;
 		this.currentWidget?.append(widgetE);
 		this.aliveWidgets.push(widgetE);
 	}
