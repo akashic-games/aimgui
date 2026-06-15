@@ -1,0 +1,10 @@
+{
+  "name": "aimgui",
+  "image": "ghcr.io/akashic-games/devcontainer-node:latest",
+  "remoteUser": "node",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+  "workspaceFolder": "/workspace",
+	"mounts": [
+		"source=${localWorkspaceFolderBasename}-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+	]
+}

@@ -29,7 +29,7 @@
     "rimraf": "^3.0.2",
     "typedoc": "^0.27.6",
     "typescript": "^5.7.3",
-    "vitest": "^3.2.4"
+    "vitest": "4.1.6"
   },
   "repository": {
     "type": "git",
@@ -38,5 +38,12 @@
   "publishConfig": {
     "access": "public",
     "@akashic-extension:registry": "https://registry.npmjs.org/"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11.11.0",
+      "onFail": "error"
+    }
   }
 }
